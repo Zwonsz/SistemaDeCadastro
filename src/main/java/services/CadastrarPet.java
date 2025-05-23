@@ -1,92 +1,94 @@
 package services;
 
-import Exceptions.GeneroInvalidoException;
-import Exceptions.NomeInvalidoException;
-import Exceptions.TipoInvalidoException;
+import Exceptions.*;
 import model.Pet;
 import model.PetAdress;
 import model.PetGender;
 import model.PetType;
 import repository.SalvarPet;
+import util.NaoInformado;
+import util.ValidadorInator;
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CadastrarPet {
 
+    public static String naoInfo = NaoInformado.NAO_INFORMADO;
 
     public static void cadastroPet() {
         String path = "C:\\Users\\Pedro\\SistemaDeCadastro\\formulario.txt";
         Pet pet = new Pet();
         Scanner scanner = new Scanner(System.in);
 
-
-        String question1 = GetSpecificLine.GetLine(path, 1);
-        System.out.println(question1);
+        //NOME
+        GetSpecificLine.GetLine(path, 1);
         String petNome = scanner.nextLine();
-        pet.setNome(petNome);
-        Pattern pattern = Pattern.compile("^[A-Za-zÀ-ÿ]+(?:\\s[A-Za-zÀ-ÿ]+)+$");
-        Matcher matcher = pattern.matcher(petNome);
-        if (matcher.find()) {
-            pet.setNome(petNome);
-        }else {
-            throw new NomeInvalidoException("É preciso ter nome e sobrenome. Nenhum cacter especial é válido");
+        try {
+            String nome = NaoInformado.textoInformado(petNome);
+            ValidadorInator.nomeValidator(nome);
+            pet.setNome(nome);
+        } catch (NomeInvalidoException e) {
+            System.out.println(e.getMessage());
         }
 
-        String question2 = GetSpecificLine.GetLine(path, 2);
-        System.out.println(question2);
+
+        //TIPO
+        GetSpecificLine.GetLine(path, 2);
         String tipo = scanner.nextLine();
-        if (tipo.equalsIgnoreCase("Cachorro")) {
-            pet.setTipo(PetType.CACHORRO);
-        } else if (tipo.equalsIgnoreCase("gato")) {
-            pet.setTipo(PetType.GATO);
-        } else {
-            throw new TipoInvalidoException();
+       try {
+          PetType type = ValidadorInator.tipoValidator(tipo);
+           pet.setTipo(type);
+       } catch (TipoInvalidoException e) {
+           System.out.println(e.getMessage());
+       }
+
+        //SEXO
+        GetSpecificLine.GetLine(path, 3);
+        String genero = scanner.nextLine();
+       try{
+           PetGender gender = ValidadorInator.genderValidator(genero);
+           pet.setSexo(gender);
+       } catch (GeneroInvalidoException e) {
+           System.out.println(e.getMessage());
+       }
+
+        //ENDERECO
+        GetSpecificLine.GetLine(path, 4);
+        PetAdress petAdress = PetAdress.criarEndereço(scanner);
+        pet.setEndereco(petAdress);
+
+        //IDADE
+        GetSpecificLine.GetLine(path, 5);
+        String idadeAprox = scanner.nextLine();
+        try{
+            String idade = ValidadorInator.numeroENaoInformado(idadeAprox);
+            ValidadorInator.validarIdade(idade);
+            pet.setIdade(idade);
+        }
+        catch (NumeroInvalidoException | IdadeInvalidaException e) {
+            System.out.println(e.getMessage());
         }
 
-        String question3 = GetSpecificLine.GetLine(path, 3);
-        System.out.println(question3);
-        String gender = scanner.nextLine();
-        if (gender.equalsIgnoreCase("Macho")) {
-            pet.setSexo(PetGender.MACHO);
-        } else if (gender.equalsIgnoreCase("Femea")) {
-            pet.setSexo(PetGender.FEMEA);
-        } else {
-            throw new GeneroInvalidoException();
+        //PESO
+        GetSpecificLine.GetLine(path, 6);
+        String pesoAprox = scanner.nextLine();
+        try{
+            String peso = ValidadorInator.numeroENaoInformado(pesoAprox);
+            ValidadorInator.validarPeso(peso);
+            pet.setPeso(peso);
+        } catch (NumeroInvalidoException | PesoInvalidaException e) {
+            System.out.println(e.getMessage());
         }
-        String question4 = GetSpecificLine.GetLine(path, 4);
-        System.out.println(question4);
-        System.out.println("Numero da casa: ");
-        String numeroCasa = scanner.nextLine();
-        System.out.println("Cidade: ");
-        String cidade = scanner.nextLine();
-        System.out.println("Rua: ");
-        String rua = scanner.nextLine();
-        PetAdress adress = new PetAdress(rua, cidade, numeroCasa);
-        pet.setEndereco(adress);
 
-        String question5 = GetSpecificLine.GetLine(path, 5);
-        System.out.println(question5);
-        double idadeAprox = scanner.nextDouble();
-        pet.setIdade(idadeAprox);
-
-        String question6 = GetSpecificLine.GetLine(path, 6);
-        System.out.println(question6);
-        double pesoAprox = scanner.nextDouble();
-        scanner.nextLine();
-        pet.setPeso(pesoAprox);
-
-        String question7 = GetSpecificLine.GetLine(path, 7);
-        System.out.println(question7);
+        //RAÇA
+        GetSpecificLine.GetLine(path, 7);
         String raca = scanner.nextLine();
-        pet.setRaca(raca);
+        pet.setRaca(NaoInformado.textoInformado(raca));
 
         scanner.close();
         SalvarPet.Salvar(pet);
 
 
     }
-
 
 }
