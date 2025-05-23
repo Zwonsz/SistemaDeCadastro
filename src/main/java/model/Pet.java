@@ -7,8 +7,8 @@ public class Pet {
     private Enum tipo;
     private Enum sexo;
     private PetAdress endereco;
-    private double idade;
-    private double peso;
+    private String idade;
+    private String peso;
     private String raca;
 
     public void setRaca(String raca) {
@@ -23,11 +23,11 @@ public class Pet {
         this.endereco = endereco;
     }
 
-    public void setIdade(double idade) {
+    public void setIdade(String idade) {
         this.idade = idade;
     }
 
-    public void setPeso(double peso) {
+    public void setPeso(String peso) {
         this.peso = peso;
     }
 
@@ -59,11 +59,11 @@ public class Pet {
         return STR."Pet{endereco=\{endereco}}";
     }
 
-    public double getIdade() {
+    public String getIdade() {
         return idade;
     }
 
-    public double getPeso() {
+    public String getPeso() {
         return peso;
     }
 

@@ -18,7 +18,7 @@ public class GetSpecificLine {
             while ((line = br.readLine()) != null) {
                 linhaAtual++;
                 if (linhaAtual == lineNumber) {
-                    return line;
+                    System.out.println(line);
                 }
             }
 
